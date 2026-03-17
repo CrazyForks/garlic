@@ -679,7 +679,6 @@ static inline void build_dex_ins_invoke_act(jd_dex_ins *ins)
     string name = dex_str_of_idx(meta, method_id->name_idx);
 
     if (proto_id->parameters_off == 0) {
-        // printf("[invoke-void] : %s()\n", name);
         return;
     }
 

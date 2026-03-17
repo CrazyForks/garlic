@@ -14,19 +14,12 @@ void dex_method_access_flag_with_flags(u4 flags, str_list *list)
     CONCAT_ACCESS_FLAG(flags, ACC_DEX_FINAL, list, "final ")
     CONCAT_ACCESS_FLAG(flags, ACC_DEX_NATIVE, list, "native ")
     CONCAT_ACCESS_FLAG(flags, ACC_DEX_ABSTRACT, list, "abstract ")
-    CONCAT_ACCESS_FLAG(flags, ACC_DEX_SYNTHETIC, list, "/* synthetic */")
+    // CONCAT_ACCESS_FLAG(flags, ACC_DEX_SYNTHETIC, list, "/* synthetic */")
 }
 
 void dex_method_access_flags(jd_method *m, str_list *list)
 {
     dex_method_access_flag_with_flags(m->access_flags, list);
-
-    if (list->count > 0 && !method_is_init(m))
-        str_concat(list, (" "));
-
-    if (!method_is_init(m))
-        if (list->count > 0)
-            str_concat(list, (" "));
 }
 
 jd_val* dex_method_parameter_val(jd_method *m, int index)

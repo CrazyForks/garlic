@@ -174,7 +174,7 @@ static inline void build_dex_ins_move_result_act(jd_dex_ins *ins)
         jd_val *val = stack_create_empty_val();
         val->type = JD_VAR_REFERENCE_T;
         string full = dex_desc_full_name(ins, desc);
-        val->data->cname = class_simple_name(full);
+        val->data->cname = class_simple_name_without_primitive(full);
         val->ins = ins;
         val->slot = u_a;
         save_stack_val(ins, val, u_a);
@@ -189,7 +189,7 @@ static inline void build_dex_ins_move_result_act(jd_dex_ins *ins)
         val->type = descriptor_data_type_of_char(desc[0]);
         if (val->type == JD_VAR_REFERENCE_T) {
             string full = dex_desc_full_name(ins, desc);
-            val->data->cname = class_simple_name(full);
+            val->data->cname = class_simple_name_without_primitive(full);
         }
         else {
             string class_name = descriptor_class_name_of_primitive(desc[0]);
@@ -396,7 +396,7 @@ static inline void build_dex_ins_check_cast_act(jd_dex_ins *ins)
     string type_desc = dex_str_of_type_id(meta, type_index);
     jd_val *out_val = ins->stack_out->local_vars[u_a];
     string full = dex_desc_full_name(ins, type_desc);
-    out_val->data->cname = class_simple_name(full);
+    out_val->data->cname = class_simple_name_without_primitive(full);
 }
 
 static inline void build_dex_ins_instance_of_act(jd_dex_ins *ins)
@@ -427,7 +427,7 @@ static inline void build_dex_ins_new_instance_act(jd_dex_ins *ins)
     jd_val *val = stack_create_empty_val();
     jd_val_data *data = val->data;
     string full = dex_desc_full_name(ins, type_desc);
-    data->cname = class_simple_name(full);
+    data->cname = class_simple_name_without_primitive(full);
     val->type = JD_VAR_UNINITIALIZED_T;
     val->ins = ins;
     val->slot = u_a;
@@ -447,7 +447,7 @@ static inline void build_dex_ins_new_array_act(jd_dex_ins *ins)
     jd_val *val = stack_create_empty_val();
     jd_val_data *data = val->data;
     string full = dex_desc_full_name(ins, type_desc);
-    data->cname = class_simple_name(full);
+    data->cname = class_simple_name_without_primitive(full);
     val->type = JD_VAR_REFERENCE_T;
     val->ins = ins;
 
@@ -556,7 +556,7 @@ static inline void build_dex_ins_instanceop_act(jd_dex_ins *ins)
         val->slot = u_a;
         val->ins = ins;
         string full = dex_desc_full_name(ins, desc);
-        data->cname = class_simple_name(full);
+        data->cname = class_simple_name_without_primitive(full);
         val->type = JD_VAR_REFERENCE_T;
 
         save_stack_val(ins, val, u_a);
@@ -625,7 +625,7 @@ static inline void build_dex_ins_staticop_act(jd_dex_ins *ins)
         val->slot = u_a;
         jd_val_data *data = val->data;
         string full = dex_desc_full_name(ins, desc);
-        data->cname = class_simple_name(full);
+        data->cname = class_simple_name_without_primitive(full);
         data->val = field_name;
         val->type = JD_VAR_REFERENCE_T;
         save_stack_val(ins, val, u_a);
@@ -670,6 +670,9 @@ static inline void build_dex_ins_staticop_act(jd_dex_ins *ins)
 
 static inline void build_dex_ins_invoke_act(jd_dex_ins *ins)
 {
+    // TODO: 这里需要根据方法的参数类型来校正jd_val的class name
+    //       invoke和invoke-range都需要校正
+
     jd_dex *dex = ins->method->meta;
     jd_meta_dex *meta = dex->meta;
     u1 param_size = dex_ins_parameter(ins, 0);

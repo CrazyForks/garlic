@@ -83,7 +83,7 @@ static void dex_method_enter_stack(jd_method *m)
     if (instance) {
         string desc = dex_method_class_descriptor(meta, m->meta_method);
         string full = class_full_name(desc);
-        string cname = class_simple_name(full);
+        string cname = class_simple_name_without_primitive(full);
         stack_create_method_this_val(m, param_itor, cname);
     }
 
